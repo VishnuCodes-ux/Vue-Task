@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <!-- Modal for Edit and Add -->
     <transition name="modal">
       <div class="modal" v-if="showForm" style="display: block">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px">
@@ -55,7 +54,6 @@
       </div>
     </transition>
 
-    <!-- Add button -->
     <div style="text-align: left; margin-bottom: 20px">
       <button
         @click="addNew"
@@ -72,7 +70,6 @@
       </button>
     </div>
 
-    <!-- Kendo Grid -->
     <div class="col-md-12">
       <kendo-grid :data-items="gridData" :filterable="true">
         <kendo-grid-column field="id" title="ID" />

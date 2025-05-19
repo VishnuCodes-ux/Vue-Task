@@ -1165,11 +1165,6 @@
     "@progress/kendo-common" "^1.0.1"
     "@progress/pako-esm" "^1.0.1"
 
-"@progress/kendo-font-icons@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@progress/kendo-font-icons/-/kendo-font-icons-1.9.0.tgz#20a1bd4a3c1d60dd0db747223e12cb5cbdf7c95a"
-  integrity sha512-PoNz7k5IlTJu4cqMY/E2Jg1j6U4RHq5NKCybXnm2cO+Hs9nxNmyB+MZ/rIEEMHKP6a7zrB69IuXu/X3ykNF/tg==
-
 "@progress/kendo-inputs-common@^3.1.0":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@progress/kendo-inputs-common/-/kendo-inputs-common-3.1.1.tgz#bfea6793ed56871bc85f9f1dc247082afe8aa773"
@@ -1200,26 +1195,31 @@
   resolved "https://registry.yarnpkg.com/@progress/kendo-svg-icons/-/kendo-svg-icons-1.9.0.tgz#5a0427b154d31ceaaccd2c3e3c6461f1626c4be3"
   integrity sha512-Hgf52EPLx0wfSpo3h9WXqEHBlcYUGi9iIjuIrcKfBCKaNax/d3StcjrXruj2CX3F66CisqWrgUJAmMc22KNinw==
 
-"@progress/kendo-theme-core@6.7.0":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-core/-/kendo-theme-core-6.7.0.tgz#e1a6c3ec4ab645e4f2fd8ff053bd337fa71a4ed6"
-  integrity sha512-/uzneVDazuG3aQoE9BfgX3pxqqiKTVNRKayV0zLP83qou5/+GRSreV8W4eIHluWDnJhr7OVL7v55vHZt8qYrPQ==
+"@progress/kendo-svg-icons@^4.1.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@progress/kendo-svg-icons/-/kendo-svg-icons-4.3.0.tgz#3ace8fef2a49fed0b307bd5c3c01708b2fe6f6c9"
+  integrity sha512-kJevDuvTPesYDWBIKsXXVt/LjIGTQ3yR5z1ImLKKmBOQw27qLOyFs3tmND2S3EB6X2k8zwopwuV1OqFPgiBAPQ==
 
-"@progress/kendo-theme-default@^6.6.0":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-default/-/kendo-theme-default-6.7.0.tgz#f2bd9cd372a9f68559cbaf8dd547b471d28b4991"
-  integrity sha512-9+0JN41ND3RNWTjZmyR/wpk2JO3BtZrCh30DOeu0/ipB383zpB8YSEQaQZFXhvCatZgJQ7rN6DWUtYZTzfHuDQ==
-  dependencies:
-    "@progress/kendo-font-icons" "1.9.0"
-    "@progress/kendo-theme-core" "6.7.0"
-    "@progress/kendo-theme-utils" "6.7.0"
+"@progress/kendo-theme-core@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-core/-/kendo-theme-core-11.0.2.tgz#2e66e1d9c2406cbefd25070338a2a07de5b11f0c"
+  integrity sha512-z89TLL4HUFNo7AkcTNkHJtvmjT7h+dhSAhMkUeiiE9sTrKZAwglCgnV5Fgs9PX2Y1m5lOLquY2ZT2U7pwVUndg==
 
-"@progress/kendo-theme-utils@6.7.0":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-utils/-/kendo-theme-utils-6.7.0.tgz#e89c244587e4e40b7c205cd166ce4a9666c8a82d"
-  integrity sha512-QFLU7OQnwnCr5OSBur+wMmT2YqF+cCE5K5fscD1h5qaHsW2l6+Axs3WahxWmCZYJCyo25jgeTXld+QAShHoLRA==
+"@progress/kendo-theme-default@^11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-default/-/kendo-theme-default-11.0.2.tgz#ef055bd633d5e243d3b48f38c2e91d998ed66e7b"
+  integrity sha512-CZOYx/M1mzZz6QGhxvN5ZKNMQRrCMrsSSu1Qv1CqzthL6XTORZ/jO4CNjmfFwaVjuRecAHjf6crPJriXkmgJOg==
   dependencies:
-    "@progress/kendo-theme-core" "6.7.0"
+    "@progress/kendo-svg-icons" "^4.1.0"
+    "@progress/kendo-theme-core" "11.0.2"
+    "@progress/kendo-theme-utils" "11.0.2"
+
+"@progress/kendo-theme-utils@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@progress/kendo-theme-utils/-/kendo-theme-utils-11.0.2.tgz#67a650298fd67e497deec332b5219920cca00719"
+  integrity sha512-VYf2sYSGwQtEllpP2Otz3nFn6D/9W8fXXYfFyMSLwBW/oNhUq5okljON8008ecgTCU7sSaicof8/aTrI6hIsLg==
+  dependencies:
+    "@progress/kendo-theme-core" "11.0.2"
 
 "@progress/kendo-vue-animation@^6.3.0":
   version "6.3.0"
