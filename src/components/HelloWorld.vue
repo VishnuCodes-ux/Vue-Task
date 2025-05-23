@@ -1,12 +1,10 @@
 <template>
   <div class="container">
-    <!-- Modal for Add/Edit -->
     <transition name="modal">
       <div class="modal" v-if="showForm" style="display: block">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px">
           <div class="modal-content" style="text-align: center">
             <div class="modal-body" style="padding: 40px">
-              <!-- Form with validation schema -->
               <Form :validation-schema="schema" :initial-values="formData" @submit="saveData">
                 <div class="form-group mb-3">
                   <Field name="name" placeholder="Name" class="form-control" type="text" />
@@ -29,12 +27,10 @@
       </div>
     </transition>
 
-    <!-- Add Button -->
     <div style="text-align: left; margin-bottom: 20px">
       <button @click="addNew" class="btn btn-success">Add New</button>
     </div>
 
-    <!-- Kendo Grid -->
     <div class="col-md-12">
       <Grid 
         ref="grid" 
@@ -107,7 +103,6 @@ const columns = ref([
   { cell: 'myTemplate', title: 'Actions', filterable: false, width: '200px' }
 ]);
 
-// Methods
 const addNew = () => {
   formData.value = { id: null, name: "", age: "", email: "" };
   showForm.value = true;
