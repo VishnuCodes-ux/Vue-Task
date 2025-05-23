@@ -1,201 +1,159 @@
 <template>
   <div class="container">
+    <!-- Modal for Add/Edit -->
     <transition name="modal">
       <div class="modal" v-if="showForm" style="display: block">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px">
           <div class="modal-content" style="text-align: center">
             <div class="modal-body" style="padding: 40px">
-              <ValidationForm @submit="saveData">
+              <!-- Form with validation schema -->
+              <Form :validation-schema="schema" :initial-values="formData" @submit="saveData">
                 <div class="form-group mb-3">
-                  <ValidationField name="name" rules="required|min:3" v-slot="{ field, errors: fieldErrors }">
-                    <input
-                      v-bind="field"
-                      type="text"
-                      placeholder="Name"
-                      class="form-control"
-                      :class="{ input: true, 'is-danger': fieldErrors.length > 0 }"
-                    />
-                    <span v-if="fieldErrors.length" class="help is-danger">{{ fieldErrors[0] }}</span>
-                  </ValidationField>
+                  <Field name="name" placeholder="Name" class="form-control" type="text" />
+                  <ErrorMessage class="text-danger" name="name" />
                 </div>
-
                 <div class="form-group mb-3">
-                  <ValidationField name="age" rules="required|numeric|min_value:18" v-slot="{ field, errors: fieldErrors }">
-                    <input
-                      v-bind="field"
-                      type="number"
-                      placeholder="Age"
-                      class="form-control"
-                      :class="{ input: true, 'is-danger': fieldErrors.length > 0 }"
-                    />
-                    <span v-if="fieldErrors.length" class="help is-danger">{{ fieldErrors[0] }}</span>
-                  </ValidationField>
+                  <Field name="age" placeholder="Age" class="form-control" type="number" />
+                  <ErrorMessage class="text-danger" name="age" />
                 </div>
-
                 <div class="form-group mb-3">
-                  <ValidationField name="email" rules="required|email" v-slot="{ field, errors: fieldErrors }">
-                    <input
-                      v-bind="field"
-                      type="text"
-                      placeholder="Email"
-                      class="form-control"
-                      :class="{ input: true, 'is-danger': fieldErrors.length > 0 }"
-                    />
-                    <span v-if="fieldErrors.length" class="help is-danger">{{ fieldErrors[0] }}</span>
-                  </ValidationField>
+                  <Field name="email" placeholder="Email" class="form-control" type="email" />
+                  <ErrorMessage class="text-danger" name="email" />
                 </div>
-
-                <button type="submit" class="btn btn-primary m-1">Save</button>
-                <button type="button" class="btn btn-secondary m-1" @click="closeForm">Close</button>
-              </ValidationForm>
+                <button class="btn btn-primary m-1" type="submit">Save</button>
+                <button class="btn btn-secondary m-1" @click="showForm = false" type="button">Close</button>
+              </Form>
             </div>
           </div>
         </div>
       </div>
     </transition>
 
+    <!-- Add Button -->
     <div style="text-align: left; margin-bottom: 20px">
-      <button
-        @click="addNew"
-        style="
-          background: green;
-          padding: 5px 40px;
-          color: #ffffff;
-          cursor: pointer;
-          border-radius: 5px;
-          border: 1px solid green;
-        "
-      >
-        Add
-      </button>
+      <button @click="addNew" class="btn btn-success">Add New</button>
     </div>
 
+    <!-- Kendo Grid -->
     <div class="col-md-12">
-      <kendo-grid :data-items="gridData" :filterable="true">
-        <kendo-grid-column field="id" title="ID" />
-        <kendo-grid-column field="name" title="Name" />
-        <kendo-grid-column field="age" title="Age" />
-        <kendo-grid-column field="email" title="Email" />
-        <kendo-grid-column :width="200" title="Action">
-          <template #cell="{ dataItem }">
-            <button class="btn btn-success btn-sm m-1" @click="editHandler(dataItem)">Edit</button>
-            <button class="btn btn-danger btn-sm m-1" @click="deleteHandler(dataItem)">Delete</button>
+      <Grid 
+        ref="grid" 
+        :data-items="onDataBound" 
+        :sortable="true" 
+        :pageable="true"
+        :edit-field="'inEdit'"
+        @datastatechange="dataStateChange"
+        :columns="columns"
+      >
+        <template v-slot:myTemplate="{ props }">
+          <template v-if="props?.dataItem">
+            <KButton
+              class="btn btn-primary m-1"
+              :theme-color="'success'"
+              @click="editHandler(props.dataItem)"
+            >
+              Update
+            </KButton>
+            <KButton
+              class="btn btn-danger m-1"
+              :theme-color="'danger'"
+              @click="deleteHandler(props.dataItem)"
+            >
+              Delete
+            </KButton>
           </template>
-        </kendo-grid-column>
-      </kendo-grid>
+        </template>
+
+        <GridNoRecords>
+          There is no data available.
+        </GridNoRecords>
+      </Grid>
     </div>
   </div>
 </template>
 
-<script>
-import { ref, reactive, getCurrentInstance } from "vue";
-import { Form as ValidationForm, Field as ValidationField } from "vee-validate";
-import { Grid, GridColumn } from "@progress/kendo-vue-grid";
+<script setup>
+import { ref } from "vue";
+import Swal from "sweetalert2";
+import "@progress/kendo-theme-default/dist/all.css";
 
-export default {
-  components: {
-    ValidationForm,
-    ValidationField,
-    'kendo-grid': Grid,
-    'kendo-grid-column': GridColumn,
-  },
+import { Grid, GridNoRecords } from "@progress/kendo-vue-grid";
+import { Button as KButton } from "@progress/kendo-vue-buttons";
 
-  setup() {
-    const { proxy } = getCurrentInstance();
-    const showForm = ref(false);
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 
-    const formData = reactive({
-      id: null,
-      name: "",
-      age: "",
-      email: "",
-    });
+// Validation Schema
+const schema = yup.object({
+  name: yup.string().required('Name is required').min(3, 'At least 3 characters'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  age: yup.number().required('Age is required').min(18, 'Must be 18 or older'),
+});
 
-    const gridData = ref([
-      { id: 1, name: "John Doe dd", age: 28, email: "JohnDoe@test.com" },
-      { id: 2, name: "Jane Smith", age: 32, email: "JaneSmith@test.com" },
-      { id: 3, name: "Michael Johnson", age: 45, email: "MichaelJohnson@test.com" },
-    ]);
+// State Variables
+const showForm = ref(false);
+const formData = ref({ id: null, name: "", age: "", email: "" });
+const onDataBound = ref([
+  { id: 1, name: "John Doe", age: 28, email: "JohnDoe@test.com" },
+  { id: 2, name: "Jane Smith", age: 32, email: "JaneSmith@test.com" },
+  { id: 3, name: "Michael Johnson", age: 45, email: "MichaelJohnson@test.com" },
+]);
 
-    function editHandler(rowData) {
-      formData.id = rowData.id;
-      formData.name = rowData.name;
-      formData.age = rowData.age;
-      formData.email = rowData.email;
-      showForm.value = true;
+const columns = ref([
+  { field: 'id', title: 'ID', width: '80px', filterable: false, editable: false },
+  { field: 'name', title: 'Name', filterable: true },
+  { field: 'age', title: 'Age', filter: 'numeric' },
+  { field: 'email', title: 'Email', filterable: true },
+  { cell: 'myTemplate', title: 'Actions', filterable: false, width: '200px' }
+]);
+
+// Methods
+const addNew = () => {
+  formData.value = { id: null, name: "", age: "", email: "" };
+  showForm.value = true;
+};
+
+const dataStateChange = (event) => {
+  console.log("Data state changed:", event);
+};
+
+const editHandler = (dataItem) => {
+  if (dataItem) {
+    formData.value = { ...dataItem };
+    showForm.value = true;
+  }
+};
+
+const deleteHandler = (dataItem) => {
+  Swal.fire({
+    title: "Are you sure?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      onDataBound.value = onDataBound.value.filter((item) => item.id !== dataItem.id);
+      Swal.fire("Deleted!", "The record has been deleted.", "success");
     }
+  });
+};
 
-    function deleteHandler(rowData) {
-      proxy.$swal
-        .fire({
-          title: "Are you sure?",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes, delete it!",
-          cancelButtonText: "Cancel",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            const index = gridData.value.findIndex((item) => item.id === rowData.id);
-            if (index !== -1) {
-              gridData.value.splice(index, 1);
-              proxy.$swal.fire("Deleted!", "Record has been deleted.", "success");
-            }
-          } else {
-            proxy.$swal.fire("Cancelled", "Your record is safe.", "info");
-          }
-        });
+const saveData = (values, actions) => {
+  if (formData.value.id === null) {
+    formData.value.id = onDataBound.value.length + 1;
+    values.id = formData.value.id;
+    onDataBound.value.push({ ...values });
+    Swal.fire("Success!", "Record added successfully.", "success");
+  } else {
+    const index = onDataBound.value.findIndex(item => item.id === formData.value.id);
+    if (index !== -1) {
+      onDataBound.value[index] = { ...values };
+      Swal.fire("Success!", "Record updated successfully.", "success");
     }
-
-    function addNew() {
-      formData.id = null;
-      formData.name = "";
-      formData.age = "";
-      formData.email = "";
-      showForm.value = true;
-    }
-
-    function closeForm() {
-      showForm.value = false;
-    }
-
-    function saveData(values) {
-      if (formData.id === null) {
-        const newId = gridData.value.length ? Math.max(...gridData.value.map((x) => x.id)) + 1 : 1;
-        gridData.value.push({
-          id: newId,
-          name: values.name,
-          age: values.age,
-          email: values.email,
-        });
-        proxy.$swal.fire("Success", "New record added.", "success");
-      } else {
-        const index = gridData.value.findIndex((item) => item.id === formData.id);
-        if (index !== -1) {
-          gridData.value[index] = {
-            id: formData.id,
-            name: values.name,
-            age: values.age,
-            email: values.email,
-          };
-          proxy.$swal.fire("Success", "Record updated.", "success");
-        }
-      }
-
-      showForm.value = false;
-    }
-
-    return {
-      showForm,
-      formData,
-      gridData,
-      editHandler,
-      deleteHandler,
-      addNew,
-      saveData,
-      closeForm,
-    };
-  },
+  }
+  actions.resetForm();
+  showForm.value = false;
 };
 </script>
 
@@ -204,25 +162,24 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1050;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.is-danger {
+.modal-content {
+  width: 600px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+.is-invalid {
   border-color: red;
 }
-
-.help.is-danger {
+.invalid-feedback {
   color: red;
   font-size: 12px;
-}
-
-.input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
 }
 </style>

@@ -6,6 +6,7 @@
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
+import '@progress/kendo-theme-default/dist/all.css';
 
 export default {
   name: 'App',

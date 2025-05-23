@@ -22,6 +22,7 @@ defineRule('min_value', min_value)
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
+import '@progress/kendo-theme-default/dist/all.css';
 const app = createApp(App)
 
 app.component('KendoGrid', Grid)
