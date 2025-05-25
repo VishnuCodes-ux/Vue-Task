@@ -4,23 +4,16 @@
       <div class="modal" v-if="showForm" style="display: block">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width: 600px">
           <div class="modal-content" style="text-align: center">
+             <button
+              type="button"
+              class="btn-close"
+              @click="showForm = false"
+              style="position: absolute; top: 15px; right: 15px; z-index: 10;"
+            >
+              ✕
+            </button>
             <div class="modal-body" style="padding: 40px">
-              <Form :validation-schema="schema" :initial-values="formData" @submit="saveData">
-                <div class="form-group mb-3">
-                  <Field name="name" placeholder="Name" class="form-control" type="text" />
-                  <ErrorMessage class="text-danger" name="name" />
-                </div>
-                <div class="form-group mb-3">
-                  <Field name="age" placeholder="Age" class="form-control" type="number" />
-                  <ErrorMessage class="text-danger" name="age" />
-                </div>
-                <div class="form-group mb-3">
-                  <Field name="email" placeholder="Email" class="form-control" type="email" />
-                  <ErrorMessage class="text-danger" name="email" />
-                </div>
-                <button class="btn btn-primary m-1" type="submit">Save</button>
-                <button class="btn btn-secondary m-1" @click="showForm = false" type="button">Close</button>
-              </Form>
+              <FormSeaction :formTitleText="formTitleText" :formData="formData"  :saveData="saveData" :schema="schema" @close="showForm = false" />
             </div>
           </div>
         </div>
@@ -76,8 +69,8 @@ import "@progress/kendo-theme-default/dist/all.css";
 import { Grid, GridNoRecords } from "@progress/kendo-vue-grid";
 import { Button as KButton } from "@progress/kendo-vue-buttons";
 
-import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import FormSeaction from './FormSeaction.vue';
 
 // Validation Schema
 const schema = yup.object({
@@ -103,7 +96,10 @@ const columns = ref([
   { cell: 'myTemplate', title: 'Actions', filterable: false, width: '200px' }
 ]);
 
+const formTitleText = ref("");
+
 const addNew = () => {
+  formTitleText.value = "Add Form";
   formData.value = { id: null, name: "", age: "", email: "" };
   showForm.value = true;
 };
@@ -113,6 +109,7 @@ const dataStateChange = (event) => {
 };
 
 const editHandler = (dataItem) => {
+  formTitleText.value = "Edit Form";
   if (dataItem) {
     formData.value = { ...dataItem };
     showForm.value = true;
@@ -149,10 +146,11 @@ const saveData = (values, actions) => {
   }
   actions.resetForm();
   showForm.value = false;
+  formTitleText.value = "";
 };
 </script>
 
-<style scoped>
+<style>
 .modal {
   position: fixed;
   top: 0;
