@@ -5,7 +5,7 @@
       :initial-values="props.formData"
       @submit="saveData"
     >
-      <h3 class="text-danger mb-5">{{ props.formTitleText }}</h3>
+      <h3 class="mb-5">{{ props.formTitleText }}</h3>
 
       <div class="form-group mb-3">
         <Field
